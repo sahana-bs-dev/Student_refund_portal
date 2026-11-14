@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Student Refund Portal Login</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .container {
+            width: 400px;
+            margin: 120px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Student Refund Portal</h1>
+
+    <input type="text" id="login_id" placeholder="Enter Login ID">
+
+    <input type="password" id="password" placeholder="Enter Password">
+
+    <button onclick="login()">Login</button>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+function login() {
+    const login_id = document.getElementById("login_id").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (login_id === "" || password === "") {
+        document.getElementById("message").innerText = "Enter ID and password";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("login_id", login_id);
+    formData.append("password", password);
+
+    fetch("backend/login.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            if (data.role === "student") {
+                localStorage.setItem("student_usn", data.login_id);
+                localStorage.setItem("student_name", data.name || "Student Name Not Found");
+                localStorage.setItem("student_logged_in", "true");
+                window.location.href = "student/student.html";
+            }
+
+            else if (data.role === "admin") {
+                localStorage.setItem("admin_department", data.department);
+                localStorage.setItem("admin_logged_in", "true");
+                window.location.href = "admin/admin.html";
+            }
+
+            else if (data.role === "hod") {
+                localStorage.setItem("hod_department", data.department);
+                localStorage.setItem("hod_name", "HOD");
+                localStorage.setItem("hod_logged_in", "true");
+                window.location.href = "hod/hod.html";
+            }
+
+        } else {
+            document.getElementById("message").innerText = data.message;
+        }
+
+    })
+    .catch(error => {
+        document.getElementById("message").innerText = "Login failed";
+    });
+}
+</script>
+
+</body>
+</html>

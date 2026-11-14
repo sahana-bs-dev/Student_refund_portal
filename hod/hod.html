@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>HOD Portal - Event Permission Management</title>
+
+    <!-- Bootstrap (same as student portal) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="./hod.css?v=2">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.2/css/tabulator.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.2/js/tabulator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+       <div class="logo">
+    <i class="fa-solid fa-chalkboard-user"></i>
+    <h4>HOD Portal</h4>
+</div>
+
+        <ul>
+
+            <li class="active" onclick="showSection('dashboard', this)">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </li>
+
+            <li onclick="showSection('requests', this)">
+                <i class="fa-solid fa-calendar-check"></i>
+                Permission Requests
+            </li>
+
+            <li onclick="showSection('refunds', this)">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                Refund Requests
+            </li>
+
+            <li onclick="showSection('grantReport', this); loadGrantReport();">
+                <i class="fa-solid fa-chart-column"></i>
+                Student Grant Report
+            </li>
+
+            <li onclick="showSection('upload', this)">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                Upload Students
+            </li>
+
+            <li onclick="showSection('promote', this)">
+              <i class="fa-solid fa-arrow-up-right-dots"></i>
+              Promote Semester
+            </li>
+
+            <li onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main Content -->
+
+    <main class="main-content">
+
+        <!-- Topbar -->
+
+       <nav class="topbar">
+
+            <div class="topbar-left">
+                <h3>Event Permission Management</h3>
+            </div>
+
+            <div class="hod-info">
+                <span id="display_name"></span>
+                <span class="dept-pill" id="display_department"></span>
+            </div>
+
+        </nav>
+
+        <!-- Dashboard -->
+
+        <section id="dashboard" class="page">
+
+            <div class="welcome-card">
+                <h2>Welcome</h2>
+                <input type="text" id="dashboard_name" readonly>
+            </div>
+
+            <h4 style="margin-top:20px;">Permission Requests</h4>
+
+            <div class="dashboard-cards">
+
+                <div class="card-box">
+                    <h3>Total Requests</h3>
+                    <span id="totalCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Pending Review</h3>
+                    <span id="pendingCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Approved</h3>
+                    <span id="approvedCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Rejected</h3>
+                    <span id="rejectedCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Awaiting Clarification</h3>
+                    <span id="clarificationCount">0</span>
+                </div>
+
+            </div>
+
+            <h4 style="margin-top:20px;">Refund Requests</h4>
+
+            <div class="dashboard-cards">
+
+                <div class="card-box">
+                    <h3>Total Requests</h3>
+                    <span id="refundTotalCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Pending Review</h3>
+                    <span id="refundPendingCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Approved</h3>
+                    <span id="refundApprovedCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Rejected</h3>
+                    <span id="refundRejectedCount">0</span>
+                </div>
+
+                <div class="card-box">
+                    <h3>Awaiting Clarification</h3>
+                    <span id="refundClarificationCount">0</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Permission Requests -->
+
+        <section id="requests" class="page" style="display:none;">
+
+            <div class="erp-card">
+
+                <h2 class="mb-4">
+                    <i class="fa-solid fa-calendar-check text-primary"></i>
+                    Event Permission Requests
+                </h2>
+
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search by USN, event, team, status..."
+                        onkeyup="searchRequests()"
+                    >
+                </div>
+
+                <div class="top-buttons">
+
+                    <select id="yearFilterSelect" class="dept-select" title="Choose which year to view" onchange="applyYearFilter()">
+                        <option value="all">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+
+                </div>
+
+                <p id="resultCount" class="text-muted">Showing 0 Requests</p>
+
+                <div id="requestsTable"></div>
+
+            </div>
+
+        </section>
+
+        <!-- Refund Requests -->
+
+        <section id="refunds" class="page" style="display:none;">
+
+            <div class="erp-card">
+
+                <h2 class="mb-4">
+                    <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
+                    Student Refund Requests
+                </h2>
+
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="refundSearchInput"
+                        placeholder="Search by USN, name, event, status..."
+                        onkeyup="searchRefundRequests()"
+                    >
+                </div>
+
+                <div class="top-buttons">
+
+                    <!-- Same year filter used by Permission Requests -->
+                    <select
+                        id="refundYearFilterSelect"
+                        class="dept-select"
+                        title="Choose which year to view"
+                        onchange="applyRefundYearFilter()"
+                    >
+                        <option value="all">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+
+                    <button class="active-btn" onclick="showRefundActive()">
+                        <i class="fa-solid fa-folder-open"></i>
+                        Active Requests
+                    </button>
+
+                    <button class="archive-btn" onclick="showRefundArchive()">
+                        <i class="fa-solid fa-box-archive"></i>
+                        Archive
+                    </button>
+
+                    <button class="excel-btn" onclick="downloadRefundExcel()">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Download Excel
+                    </button>
+
+                </div>
+
+                <p id="refundResultCount" class="text-muted">Showing 0 Requests</p>
+
+                <div id="refundsTable"></div>
+
+            </div>
+
+        </section>
+
+        <!-- Student Grant Report -->
+
+        <section id="grantReport" class="page" style="display:none;">
+
+            <div class="erp-card">
+
+                <h2 class="mb-4">
+                    <i class="fa-solid fa-chart-column text-primary"></i>
+                    Student Grant Report
+                </h2>
+
+                <p class="text-muted">
+                    Every student in your department who has been paid a refund this academic year,
+                    the events they were refunded for, and their total amount granted.
+                </p>
+
+                <div class="top-buttons">
+
+                    <select
+                        id="grantReportYearFilterSelect"
+                        class="dept-select"
+                        title="Choose which year to view"
+                        onchange="applyGrantReportYearFilter()"
+                    >
+                        <option value="all">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+
+                </div>
+
+                <table id="grantReportDataTable" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>USN</th>
+                            <th>Student Name</th>
+                            <th>Semester</th>
+                            <th>Events Refunded</th>
+                            <th>Total Amount Granted</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- Upload Students -->
+
+        <section id="upload" class="page" style="display:none;">
+
+            <div class="erp-card">
+
+                <h2 class="mb-4">
+                    <i class="fa-solid fa-file-arrow-up text-primary"></i>
+                    Upload Students
+                </h2>
+
+                <p class="text-muted">
+                    Download the Excel template, fill in the student details, then upload the
+                    filled file here instead of adding students one by one. The Department
+                    column is shown for reference only — every student you upload is added to
+                    your own department regardless of what's typed there. Students already in
+                    the system (matched by USN) are automatically skipped, never overwritten.
+                </p>
+
+                <div class="top-buttons">
+                    <button class="excel-btn" onclick="downloadStudentTemplate()">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Download Excel Template
+                    </button>
+                </div>
+
+                <hr>
+
+<div class="top-buttons">
+
+    <input
+        type="file"
+        id="studentExcelFile"
+        accept=".csv,.xlsx,.xls"
+        style="display:none;"
+        onchange="onStudentFileChosen()"
+    >
+
+    <button class="btn btn-primary" onclick="document.getElementById('studentExcelFile').click()">
+    <i class="fa-solid fa-paperclip"></i>
+    Choose File
+</button>
+
+<span id="studentFileNameLabel" class="text-muted">No file chosen</span>
+
+<button class="btn btn-success" onclick="uploadStudentExcel()">
+    <i class="fa-solid fa-upload"></i>
+    Upload Filled Excel
+</button>
+
+</div>
+
+                <p id="uploadStatusMsg" class="text-muted"></p>
+                <div id="uploadResultsTable"></div>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="promote" class="page" style="display:none;">
+
+    <div class="erp-card">
+
+        <h2 class="mb-4">
+            <i class="fa-solid fa-arrow-up-right-dots text-primary"></i>
+            Promote Semester
+        </h2>
+
+        <p class="text-muted">
+            This moves every ACTIVE student in your department up one semester.
+            Students already in semester 8 will be marked "graduated" and will
+            no longer be able to log in. Run this once, manually, whenever a
+            semester actually finishes. This cannot be undone automatically.
+        </p>
+
+        <div class="dashboard-cards" style="margin-top:10px;">
+
+            <button class="card-box" style="cursor:pointer;" onclick="hodPromoteStudents()">
+                <h3>Promote Semester</h3>
+                <span style="font-size:13px;">Move your department's students to their next semester</span>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+    </main>
+
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" class="confirm-overlay">
+    <div class="confirm-box">
+        <p id="confirmMessage"></p>
+        <div class="confirm-actions">
+            <button id="confirmCancelBtn" class="confirm-btn confirm-cancel">Cancel</button>
+            <button id="confirmOkBtn" class="confirm-btn confirm-ok">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="imageModal" class="modal">
+    <div class="image-container">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" style="display:none;">
+        <iframe id="modalPdf" style="display:none; width:100%; height:80vh; border:none;"></iframe>
+    </div>
+</div>
+
+<script src="../assets/js/security.js"></script>
+<script src="hod.js?v=2"></script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+backend/.env
+.env
+*.sql
+uploads/
